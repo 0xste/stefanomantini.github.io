@@ -1,4 +1,4 @@
-@import url("font-awesome.min.css");
+@import url("https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css");
 @import url("http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300italic,400,400italic,600,600italic,700,700italic");
 
 
@@ -3121,7 +3121,7 @@
 				}
 
 	}
-	
+
 	.portfolio-item{
 		height:100%;
 		width:overflow;
@@ -3129,7 +3129,7 @@
 		top:0;
 		left:0;
 	}
-	
+
 	.timeline-Header-title u-inlineBlock{
 		display:none !important;
 	}

@@ -5,10 +5,22 @@
 		<title>Stefano Mantini | Web Developer </title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+		<!--[if lte IE 8]><script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script><![endif]-->
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
 
+		<meta property="og:title" content="Stefano Mantini" />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="stefanomantini.co.uk" />
+
+		<script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga
+		  ga('create', 'UA-55973965-1', 'auto');
+		  ga('send', 'pageview
+		</script>
 	</head>
 	<body>
 
@@ -28,51 +40,51 @@
 
 				<div class="box alt container">
 					<section class="feature left">
-						<a href="http://vcm-tsp.herokuapp.com/" target="_blank" class="image icon fa-share-alt"><img class="portfolio-item" src="images/vcm-tsp.PNG" alt="" /></a>
+						<a href="http://vcm-tsp.herokuapp.com/" target="_blank" class="image icon fa-share-alt"><img class="portfolio-item" src="assets/images/vcm-tsp.PNG" alt="" /></a>
 						<div class="content">
 							<h3>Algorithms for efficient vehicle compound management</h3>
 							<p>A developed API to facilitate the investigation of Travelling Salesman Problems with an application to vehicle compound management</p>
 						</div>
 					</section>
 					<section class="feature right">
-						<a href="http://cfdhm.com" target="_blank" class="image icon fa-soccer-ball-o"><img class="portfolio-item" src="images/cfdhm.PNG" alt="" /></a>
+						<a href="http://cfdhm.com" target="_blank" class="image icon fa-soccer-ball-o"><img class="portfolio-item" src="assets/images/cfdhm.PNG" alt="" /></a>
 						<div class="content">
 							<h3>CrossFit DHM</h3>
 							<p>Full SDLC for a simple blogging website</p>
 						</div>
 					</section>
 					<section class="feature left">
-						<a href="http://thepressurepoint.co.uk" target="_blank" class="image icon fa-heart-o"><img class="portfolio-item" src="images/tpp.png" alt="" /></a>
+						<a href="http://thepressurepoint.co.uk" target="_blank" class="image icon fa-heart-o"><img class="portfolio-item" src="assets/images/tpp.png" alt="" /></a>
 						<div class="content">
 							<h3>The Pressure Point</h3>
 							<p>Full SDLC for a simple blogging website</p>
 						</div>
 					</section>
 				</div>
-				
-				
+
+
 				<footer class="major container 75%">
 					<h3><i class="fa fa-twitter"></i> </h3>
 					<a class="twitter-grid" data-limit="6" href="https://twitter.com/sman6798/timelines/720640869955710976"></a> <script async src="http://platform.twitter.com/widgets.js" charset="utf-8"></script>
 				</footer>
-				
+
 				<br>
-				
+
 				<div class="box container">
 					<header>
 						<h2>Curriculum Vitae</h2>
 					</header>
 					<section>
-						<iframe height="2275px" width="100%" frameBorder="0" src="https://docs.google.com/document/d/14vjK2YJ9i40FQGphfajgC3mDu_5R0Ijir4ujfCMKMwk/pub?embedded=true"></iframe>
+						<iframe height="2500px" width="100%" frameBorder="0" src="https://docs.google.com/document/d/14vjK2YJ9i40FQGphfajgC3mDu_5R0Ijir4ujfCMKMwk/pub?embedded=true"></iframe>
 					</section>
 				</div>
 
-				
-			</div>
-				
 
-				
-				
+			</div>
+
+
+
+
 		<!-- Footer -->
 			<div id="footer">
 				<div class="container 75%">
@@ -91,15 +103,18 @@
 			</div>
 
 		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/skel.min.js"></script>
+		  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/skel/3.0.0/skel.min"></script>
 			<script src="assets/js/util.js"></script>
-			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+			<!--[if lte IE 8]><script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script><![endif]-->
 			<script src="assets/js/main.js"></script>
-			
 
-			
+
+
 <script>
+function resizeIframe(obj) {
+  obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+}
 
 window.twttr = (function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0],
