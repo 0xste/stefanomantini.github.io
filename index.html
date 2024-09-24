@@ -138,8 +138,7 @@
             return generateFileList();
         },
         'cat': (file) => {
-            createVideos()
-            return '🐈' + displaySecretContent(file) ;
+            return displaySecretContent(file) ;
         },
     };
 
@@ -230,7 +229,7 @@
     }
     function generateFileList() {
         const sensitiveFiles = [
-            'bank_statement.pdf', 'tax_returns_2023.pdf', 'resume.pdf',
+            'bank_statement.pdf', 'tax_returns_2023.pdf',
             'confidential_project_plan.docx', 'passwords.txt', 'encryption_keys.json',
             'personal_info.txt', 'social_security_number.txt', 'medical_records.docx',
             'contracts/contract_A.pdf', 'contracts/contract_B.pdf', 'notes/meeting_notes.txt',
@@ -241,32 +240,47 @@
         ];
 
         // Shuffle the sensitiveFiles array and pick a subset of random files
-        const randomFiles = sensitiveFiles.sort(() => 0.5 - Math.random()).slice(0, 10);
-
-        return randomFiles.map(file => {
+        const randomFiles = sensitiveFiles.sort(() => 0.5 - Math.random()).slice(0, 10).map(file => {
             // Randomly mark some entries as directories (e.g., contracts, notes, etc.)
             return Math.random() > 0.7 ? `${file}/` : file; // About 30% chance to be a directory
-        }).join('\n');
+        })
+
+        randomFiles.unshift('resume.pdf');
+        return randomFiles.join('\n');
     }
 
     function displaySecretContent(file) {
         const secretContents = {
-            'bank_statement.pdf': 'Account Number: 123456789012\nBalance: $15,234.89\nTransactions:\n- 01/10/2024: Deposit $2,000.00\n- 01/20/2024: Withdrawal $150.00\n',
-            'tax_returns_2023.pdf': 'Filing Status: Married Filing Jointly\nRefund: $2,500.00\nTotal Income: $85,000.00\nDeductions: $15,000.00\n',
-            'passwords.txt': 'Email: user@example.com\nPassword: S3cureP@ssw0rd123\nBank: mybank2024\nSocial Media: SocialMediaUser123\n',
-            'encryption_keys.json': '{\n  "key1": "A1B2C3D4E5F6G7H8I9J0",\n  "key2": "K1L2M3N4O5P6Q7R8S9T0"\n}',
-            'personal_info.txt': 'Name: John Doe\nAddress: 456 Elm St, Somewhere, NY, 12345\nSSN: 987-65-4320\n',
-            'medical_records.docx': 'Patient Name: John Doe\nAllergies: Penicillin\nMedications: Aspirin\nLast Checkup: 12/15/2023\n',
-            'social_security_number.txt': 'SSN: 987-65-4320\n',
-            'contracts/contract_A.pdf': 'Contract A Details:\n- Party A: ABC Corp.\n- Party B: XYZ Ltd.\n- Amount: $15,000\n',
-            'notes/meeting_notes.txt': 'Meeting Notes from 02/05/2024:\n- Discussed Q2 Strategy\n- Action Items: Update project plan, Prepare quarterly report\n',
-            'logins/password_manager.json': '{\n  "service1": {\n    "username": "user1@example.com",\n    "password": "P@ssword1"\n  },\n  "service2": {\n    "username": "user2@example.com",\n    "password": "P@ssword2"\n  }\n}',
+            'resume.pdf': 'Name: Stefano Mantini\nExperience:\n- Head of platform Engineering @ Blockdaemon - 2021-Present\n- Developer Experience Lead @ Pollinate - 2020-2021\n- Lead Software Engineer @ Atom Bank - 2019-2020\n- Senior Technical Architect @ Accenture - 2018-2019\n- Software Engineer @ Nissan - 2014-2016\n',
+            'bank_statement.pdf': 'Account Number: 987654321012\nBalance: $12,345.67\nTransactions:\n- 01/15/2024: Deposit $1,500.00\n- 01/18/2024: Withdrawal $250.00\n- 02/01/2024: Payment Received $300.00\n',
+            'tax_returns_2023.pdf': 'Filing Status: Single\nRefund: $1,200.00\nTotal Income: $65,000.00\nDeductions: $12,000.00\n',
+            'confidential_project_plan.docx': 'Project Name: SecureApp\nObjective: Develop a secure application for data management.\nTeam Members: Alice, Bob, Charlie\nTimeline: January 2024 - June 2024\nBudget: $50,000\n',
+            'passwords.txt': 'Email: jane.smith@example.com\nPassword: MyS3cureP@ss\nBank: JaneBank2024\nSocial Media: JaneSocial123\n',
+            'encryption_keys.json': '{\n  "key1": "A1B2C3D4E5F6G7H8I9J0",\n  "key2": "Q1R2S3T4U5V6W7X8Y9Z0"\n}',
+            'personal_info.txt': 'Name: Jane Smith\nAddress: 123 Main St, Anytown, CA, 90210\nSSN: 123-45-6789\n',
+            'social_security_number.txt': 'SSN: 123-45-6789\n',
+            'medical_records.docx': 'Patient Name: Jane Smith\nAllergies: None\nMedications: None\nLast Checkup: 01/10/2024\n',
+            'contracts/contract_A.pdf': 'Contract A Details:\n- Party A: XYZ Corp.\n- Party B: ABC LLC.\n- Amount: $25,000\n- Terms: Payment upon completion\n',
+            'contracts/contract_B.pdf': 'Contract B Details:\n- Party A: DEF Inc.\n- Party B: GHI Ltd.\n- Amount: $30,000\n- Terms: Monthly installments\n',
+            'notes/meeting_notes.txt': 'Meeting Notes from 03/10/2024:\n- Discussed Project Timeline\n- Action Items: Prepare design mockups, Schedule follow-up meeting\n',
+            'documents/important_emails.eml': 'From: boss@example.com\nTo: jane.smith@example.com\nSubject: Important Project Update\nBody: Please review the attached documents and provide feedback by EOD.\n',
+            'photos/private_album.zip': 'Contains: 15 photos\n- vacation_2024_01.jpg\n- family_reunion_2023_02.jpg\n- birthday_party_2024_03.jpg\n',
+            'projects/security_audit_report.pdf': 'Security Audit Report 2024:\n- Vulnerabilities Found: 3\n- Recommendations: Immediate patching required\n- Next Steps: Schedule follow-up audit\n',
+            'reports/financial_overview.xlsx': 'Financial Overview 2023:\n- Revenue: $1,000,000\n- Expenses: $750,000\n- Profit: $250,000\n',
+            'logins/password_manager.json': '{\n  "service1": {\n    "username": "jane.smith@example.com",\n    "password": "S3curePassword1"\n  },\n  "service2": {\n    "username": "jane.social@example.com",\n    "password": "S3cureSocialPassword2"\n  }\n}',
+            'backup/secure_backup.zip': 'Backup includes: Databases, Configuration Files, Important Documents\n- last_backup_date: 01/31/2024\n- encryption: AES-256\n',
+            'configuration/secrets.yaml': 'api_key: "AbCdEfGh123456"\ndatabase_password: "D@t@B@seP@ssw0rd"\nservice_url: "https://api.example.com/v1/"\n',
+            'environments/staging/.env': 'DB_HOST=staging-db.example.com\nDB_USER=staging_user\nDB_PASS=staging_pass123\nAPI_KEY=staging_api_key_123\n'
         };
 
+        if (file === "resume.pdf"){ // skip cat
+            return `${file}\n\n${secretContents[file]}`;
+        }
         if (secretContents[file]) {
-            return `cat ${file}\n\n${secretContents[file]}`;
+            createVideos()
+            return `🐈 ${file}\n\n${secretContents[file]}`;
         } else {
-            return `cat: ${file}: No such file or directory`;
+            return `${file}: No such file or directory`;
         }
     }
 
