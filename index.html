@@ -74,9 +74,39 @@
                 font-size: 14px;
             }
         }
+        .overlay {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 columns */
+            gap: 10px; /* Space between videos */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1000; /* Ensure overlay is above other content */
+            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+            visibility: hidden; /* Initially hidden */
+        }
+        iframe {
+            width: 100%; /* Make iframe take full column width */
+            height: 100%; /* Make iframe take full column height */
+            border: none; /* Remove default border */
+        }
+        button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            font-size: 16px;
+            z-index: 1001; /* Ensure the button is above the overlay */
+            visibility: hidden; /* Initially hidden */
+        }
     </style>
 </head>
 <body>
+<button id="cleanupButton" onclick="cleanup()">X</button>
+<div class="overlay" id="videoOverlay"></div>
+
 <div class="terminal">
     <div class="output" id="terminal-output">Stefano Mantini - Head of Platform Engineering @ Blockdaemon<br>Type "help" for a list of commands.<br></div>
     <div class="input-line">
@@ -93,8 +123,8 @@
     let output = '';
 
     const commands = {
-        'help': 'Available commands: \nhelp - Show available commands\nabout - Information about the author\nlinkedin - Open LinkedIn\n' +
-            'github - Open GitHub',
+        'help': 'Available commands: \nhelp - Show available commands\nclear - clear the terminal screen\nabout - Information about the author\nlinkedin - Open LinkedIn\n' +
+            'github - Open GitHub\nls – list directory contents\ncat – concatenate and print files',
         'about': 'Seasoned engineering leader with a proven track record of architecting and scaling global, distributed systems that power mission-critical platforms. Adept at crafting data-driven technical strategy, leading cross-functional teams, and fostering a culture of innovation to provide highly available, resilient solutions at scale for global technology platforms.',
         'linkedin': () => {
             window.open("https://www.linkedin.com/in/stefanomantini", "_blank");
@@ -103,6 +133,13 @@
         'github': () => {
             window.open("https://github.com/0xste", "_blank");
             return 'Opening GitHub...';
+        },
+        'ls': () => {
+            return generateFileList();
+        },
+        'cat': (file) => {
+            createVideos()
+            return '🐈' + displaySecretContent(file) ;
         },
     };
 
@@ -128,25 +165,109 @@
         }
     });
     function processCommand(input) {
-        if (commands[input]) {
-            if (typeof commands[input] === 'function') {
-                output = commands[input]();
-            } else {
-                output = commands[input];
-            }
-            if (input === 'clear') {
-                terminalOutput.innerHTML = ''; // Clear terminal
-                return;
-            }
+        const [command, ...args] = input.split(' '); // Split input into command and arguments
+        const argString = args.join(' '); // Join arguments back to a single string
+
+        if (command === 'clear') {
+            terminalOutput.innerHTML = ''; // Clear terminal output
+            cliInput.value = ''; // Clear input field
+            promptSpan.textContent = `0xste@${userIP}:~$`; // Reset prompt
+            return;
+        }
+
+        // Check if the command exists in the commands object
+        if (commands[command]) {
+            // If the command is a function, call it with arguments if any
+            output = typeof commands[command] === 'function' ? commands[command](argString) : commands[command];
         } else {
             output = `Command not found: ${input}`;
         }
+
         appendOutput(input, output);
     }
 
     function appendOutput(input, output) {
         terminalOutput.innerHTML += `<span class="prompt">0xste@${userIP}:~$</span> ${input}\n${output}\n`;
         terminalOutput.scrollTop = terminalOutput.scrollHeight;
+    }
+
+    const videoCount = 4; // Total number of videos to display (8 columns x 8 rows)
+
+    function createVideos() {
+        const overlay = document.getElementById('videoOverlay');
+        const cleanupButton = document.getElementById('cleanupButton');
+
+        // Show the overlay and button
+        overlay.style.visibility = 'visible';
+        cleanupButton.style.visibility = 'visible';
+
+        for (let i = 0; i < videoCount; i++) {
+            const iframe = document.createElement('iframe');
+            iframe.src = `https://www.youtube.com/embed/NUYvbT6vTPs?autoplay=1&controls=0&mute=1`;
+            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+            iframe.allowFullscreen = true;
+
+            // Append iframe to overlay
+            overlay.appendChild(iframe);
+        }
+
+        // Unmute one video after a slight delay
+        setTimeout(() => {
+            const unmuteIndex = Math.floor(Math.random() * videoCount);
+            const unmuteIframe = document.querySelectorAll('iframe')[unmuteIndex];
+            unmuteIframe.src = unmuteIframe.src.replace('mute=1', 'mute=0');
+        }, 1000); // Adjust delay as needed
+    }
+
+    // Function to clean up and remove all video iframes
+    function cleanup() {
+        const iframes = document.querySelectorAll('iframe');
+        iframes.forEach(iframe => iframe.remove());
+
+        // Hide the overlay and button after cleanup
+        document.getElementById('videoOverlay').style.visibility = 'hidden';
+        document.getElementById('cleanupButton').style.visibility = 'hidden';
+    }
+    function generateFileList() {
+        const sensitiveFiles = [
+            'bank_statement.pdf', 'tax_returns_2023.pdf', 'resume.pdf',
+            'confidential_project_plan.docx', 'passwords.txt', 'encryption_keys.json',
+            'personal_info.txt', 'social_security_number.txt', 'medical_records.docx',
+            'contracts/contract_A.pdf', 'contracts/contract_B.pdf', 'notes/meeting_notes.txt',
+            'documents/important_emails.eml', 'photos/private_album.zip',
+            'projects/security_audit_report.pdf', 'reports/financial_overview.xlsx',
+            'logins/password_manager.json', 'backup/secure_backup.zip',
+            'configuration/secrets.yaml', 'environments/staging/.env'
+        ];
+
+        // Shuffle the sensitiveFiles array and pick a subset of random files
+        const randomFiles = sensitiveFiles.sort(() => 0.5 - Math.random()).slice(0, 10);
+
+        return randomFiles.map(file => {
+            // Randomly mark some entries as directories (e.g., contracts, notes, etc.)
+            return Math.random() > 0.7 ? `${file}/` : file; // About 30% chance to be a directory
+        }).join('\n');
+    }
+
+    function displaySecretContent(file) {
+        const secretContents = {
+            'bank_statement.pdf': 'Account Number: 123456789012\nBalance: $15,234.89\nTransactions:\n- 01/10/2024: Deposit $2,000.00\n- 01/20/2024: Withdrawal $150.00\n',
+            'tax_returns_2023.pdf': 'Filing Status: Married Filing Jointly\nRefund: $2,500.00\nTotal Income: $85,000.00\nDeductions: $15,000.00\n',
+            'passwords.txt': 'Email: user@example.com\nPassword: S3cureP@ssw0rd123\nBank: mybank2024\nSocial Media: SocialMediaUser123\n',
+            'encryption_keys.json': '{\n  "key1": "A1B2C3D4E5F6G7H8I9J0",\n  "key2": "K1L2M3N4O5P6Q7R8S9T0"\n}',
+            'personal_info.txt': 'Name: John Doe\nAddress: 456 Elm St, Somewhere, NY, 12345\nSSN: 987-65-4320\n',
+            'medical_records.docx': 'Patient Name: John Doe\nAllergies: Penicillin\nMedications: Aspirin\nLast Checkup: 12/15/2023\n',
+            'social_security_number.txt': 'SSN: 987-65-4320\n',
+            'contracts/contract_A.pdf': 'Contract A Details:\n- Party A: ABC Corp.\n- Party B: XYZ Ltd.\n- Amount: $15,000\n',
+            'notes/meeting_notes.txt': 'Meeting Notes from 02/05/2024:\n- Discussed Q2 Strategy\n- Action Items: Update project plan, Prepare quarterly report\n',
+            'logins/password_manager.json': '{\n  "service1": {\n    "username": "user1@example.com",\n    "password": "P@ssword1"\n  },\n  "service2": {\n    "username": "user2@example.com",\n    "password": "P@ssword2"\n  }\n}',
+        };
+
+        if (secretContents[file]) {
+            return `cat ${file}\n\n${secretContents[file]}`;
+        } else {
+            return `cat: ${file}: No such file or directory`;
+        }
     }
 
     // Automatically focus on the input field
@@ -156,6 +277,8 @@
     window.focus = () => {
         cliInput.focus();
     };
+
+
 </script>
 </body>
 </html>
