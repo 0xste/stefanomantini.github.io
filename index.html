@@ -1,65 +1,158 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>0xste's Terminal</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            font-family: 'Fira Code', monospace;
+            background-color: #0e0e0e;
+            color: #ececec;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .terminal {
+            width: 100%;
+            height: 100%;
+            background-color: #0e0e0e;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .output {
+            flex-grow: 1;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            color: #ececec;
+            font-size: 16px;
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
+        .input-line {
+            display: block;
+            display: flex;
+            align-items: center;
+        }
+        .prompt {
+            color: #00d3ff;
+            margin-right: 5px;
+        }
+        .user-input {
+            color: #ececec;
+            outline: none;
+            border: none;
+            background: none;
+            font-family: 'Fira Code', monospace;
+            font-size: 16px;
+            width: 100%;
+        }
+        .terminal-header {
+            background-color: #1e1e1e;
+            padding: 10px;
+            color: #00d3ff;
+            border-bottom: 1px solid #444;
+            display: flex;
+            justify-content: space-between;
+        }
+        .terminal-header span {
+            color: #ffbd2e;
+        }
+        @media (max-width: 768px) {
+            .output {
+                font-size: 14px;
+            }
+            .user-input {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="terminal">
+    <div class="output" id="terminal-output">Stefano Mantini - Head of Platform Engineering @ Blockdaemon<br>Type "help" for a list of commands.<br></div>
+    <div class="input-line">
+        <span class="prompt" id="prompt">0xste@host:~$</span>
+        <input type="text" id="cli-input" class="user-input" autofocus placeholder="">
+    </div>
+</div>
 
-<html>
-	<head>
-		<title>Stefano Mantini | Software Engineer / Technical Architect</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<!--[if lte IE 8]><script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script><![endif]-->
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+<script>
+    const terminalOutput = document.getElementById('terminal-output');
+    const cliInput = document.getElementById('cli-input');
+    const promptSpan = document.getElementById('prompt');
+    let userIP = 'host';
+    let output = '';
 
-		<meta property="og:title" content="Stefano Mantini" />
-		<meta property="og:type" content="website" />
-		<meta property="og:url" content="stefanomantini.co.uk" />
+    const commands = {
+        'help': 'Available commands: \nhelp - Show available commands\nabout - Information about the author\nlinkedin - Open LinkedIn\n' +
+            'github - Open GitHub',
+        'about': 'Seasoned engineering leader with a proven track record of architecting and scaling global, distributed systems that power mission-critical platforms. Adept at crafting data-driven technical strategy, leading cross-functional teams, and fostering a culture of innovation to provide highly available, resilient solutions at scale for global technology platforms.',
+        'linkedin': () => {
+            window.open("https://www.linkedin.com/in/stefanomantini", "_blank");
+            return 'Opening LinkedIn...';
+        },
+        'github': () => {
+            window.open("https://github.com/0xste", "_blank");
+            return 'Opening GitHub...';
+        },
+    };
 
-		<!-- Global site tag (gtag.js) - Google Analytics -->
-		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-55973965-1"></script>
-		<script>
-		  window.dataLayer = window.dataLayer || [];
-		  function gtag(){dataLayer.push(arguments);}
-		  gtag('js', new Date());
+    // Fetch IP and update prompt
+    fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+            userIP = data.ip;
+            promptSpan.textContent = `0xste@${userIP}:~$`;
+        })
+        .catch(error => {
+            appendOutput('System', 'Error fetching IP address.');
+        });
 
-		  gtag('config', 'UA-55973965-1');
-		</script>
-	</head>
-	<body>
+    // Handle input submission
+    cliInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+            const inputValue = cliInput.value.trim();
+            if (inputValue) {
+                processCommand(inputValue);
+                cliInput.value = '';
+            }
+        }
+    });
+    function processCommand(input) {
+        if (commands[input]) {
+            if (typeof commands[input] === 'function') {
+                output = commands[input]();
+            } else {
+                output = commands[input];
+            }
+            if (input === 'clear') {
+                terminalOutput.innerHTML = ''; // Clear terminal
+                return;
+            }
+        } else {
+            output = `Command not found: ${input}`;
+        }
+        appendOutput(input, output);
+    }
 
-		<!-- Header -->
-			<div id="header">
-				<span class="logo icon fa-terminal"></span>
-				<h1>STEFANO MANTINI</h1>
-				<p>SOFTWARE ENGINEER</p>
-			</div>
+    function appendOutput(input, output) {
+        terminalOutput.innerHTML += `<span class="prompt">0xste@${userIP}:~$</span> ${input}\n${output}\n`;
+        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+    }
 
- 			<div id="main">
-				<div class="box alt container">
-					<h3><i class="fa fa-twitter"></i> </h3>
-					<a class="twitter-timeline" href="https://twitter.com/0x0ste?ref_src=twsrc%5Etfw">Tweets by 0x0ste</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-				</div>
-			</div>
-
-			<div id="footer">
-				<div class="container 75%">
-					<ul class="icons">
-						<li><a href="https://uk.linkedin.com/in/stefanomantini" target="_blank" class="icon fa-linkedin"><span class="label">LinkedIn</span></a></li>
-						<li><a href="https://gitlab.com/stefanomantini/opensource" target="_blank" class="icon fa-gitlab"><span class="label">Github</span></a></li>
-						<li><a href="https://twitter.com/0x0ste" target="_blank" class="icon fa-twitter"><span class="label">twitter</span></a></li>
-					</ul>
-
-					<ul class="copyright">
-						<li>&copy; Stefano Mantini. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-					</ul>
-
-				</div>
-			</div>
-
-			<!-- Scripts -->
-		  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-			<script src="https://cdnjs.cloudflare.com/ajax/libs/skel/3.0.0/skel.min"></script>
-			<script src="assets/js/util.js"></script>
-			<!--[if lte IE 8]><script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script><![endif]-->
-			<script src="assets/js/main.js"></script>
-
-	</body>
+    // Automatically focus on the input field
+    window.onload = () => {
+        cliInput.focus();
+    };
+</script>
+</body>
 </html>
