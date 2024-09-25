@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>0xste's Terminal</title>
+    <meta name="description" content="i am not a frontend engineer, please don't judge">
+    <meta name="keywords" content="stefano mantini, platform engineering, developer experience, software engineer">
+    <link rel="author" href="0xste" />
+    <link rel="canonical" href="/" />
     <style>
         * {
             box-sizing: border-box;
@@ -124,7 +128,7 @@
 
     const commands = {
         'help': 'Available commands: \nhelp - Show available commands\nclear - clear the terminal screen\nabout - Information about the author\nlinkedin - Open LinkedIn\n' +
-            'github - Open GitHub\nls – list directory contents\ncat – concatenate and print files',
+            'github - Open GitHub\nls – list directory contents\ncat – concatenate and print files\nrm – remove directory entries',
         'about': 'Seasoned engineering leader with a proven track record of architecting and scaling global, distributed systems that power mission-critical platforms. Adept at crafting data-driven technical strategy, leading cross-functional teams, and fostering a culture of innovation to provide highly available, resilient solutions at scale for global technology platforms.',
         'linkedin': () => {
             window.open("https://www.linkedin.com/in/stefanomantini", "_blank");
@@ -153,16 +157,6 @@
             appendOutput('System', 'Error fetching IP address.');
         });
 
-    // Handle input submission
-    cliInput.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') {
-            const inputValue = cliInput.value.trim();
-            if (inputValue) {
-                processCommand(inputValue);
-                cliInput.value = '';
-            }
-        }
-    });
     function processCommand(input) {
         const [command, ...args] = input.split(' '); // Split input into command and arguments
         const argString = args.join(' '); // Join arguments back to a single string
@@ -172,6 +166,16 @@
             cliInput.value = ''; // Clear input field
             promptSpan.textContent = `0xste@${userIP}:~$`; // Reset prompt
             return;
+        }
+
+        if (input === "what a week") {
+            const currentDay = new Date().toLocaleDateString(undefined, {
+                weekday: 'long'
+            });
+            console.log(input, currentDay)
+            output =  `Captain, it's ${currentDay}`
+            appendOutput(input, output)
+            return
         }
 
         // Check if the command exists in the commands object
@@ -283,6 +287,100 @@
             return `${file}: No such file or directory`;
         }
     }
+
+    // List of malicious commands to trigger the Easter egg
+    const maliciousCommands = [
+        'rm -rf /',
+        'kill -r %%1',
+        'format c:',
+        'shutdown -h now',
+        'del *.* /f /s /q'
+    ];
+
+
+    function triggerBSOD() {
+        const body = document.body;
+
+        // Store the original content to restore later
+        originalHTML = body.innerHTML;
+
+        // Remove the terminal and replace it with the BSOD screen
+        body.innerHTML = '';
+        body.style.backgroundColor = '#0000aa';
+        body.style.color = '#ffffff';
+        body.style.fontFamily = 'Consolas, "Courier New", monospace';
+        body.style.fontSize = '18px';
+        body.style.textAlign = 'left';
+        body.style.paddingTop = '50px';
+        body.style.paddingLeft = '30px';
+        body.style.lineHeight = '1.5';
+
+        // Realistic BSOD content
+        body.innerHTML = `
+        <div class="bsod">
+            <p>A problem has been detected and Windows has been shut down to prevent damage to your computer.</p>
+            <p>The problem seems to be caused by the following file: <strong>UNKNOWN_DRIVER.sys</strong></p>
+            <br>
+            <p>*** STOP: 0x000000D1 (0x00000000, 0x00000002, 0x00000000, 0x00000000)</p>
+            <p>*** DRIVER_IRQL_NOT_LESS_OR_EQUAL</p>
+            <br>
+            <p>If this is the first time you've seen this Stop error screen, restart your computer. If this screen appears again, follow these steps:</p>
+            <ul>
+                <li>Check to make sure any new hardware or software is properly installed.</li>
+                <li>If this is a new installation, ask your hardware or software manufacturer for any Windows updates you might need.</li>
+                <li>If problems continue, disable or remove any newly installed hardware or software.</li>
+            </ul>
+            <p>Disable BIOS memory options such as caching or shadowing. If you need to use Safe Mode to remove or disable components, restart your computer, press F8 to select Advanced Startup Options, and then select Safe Mode.</p>
+            <br>
+            <p>Technical information:</p>
+            <p>*** STOP: 0x0000001E (0x00000000, 0x00000000, 0x00000000, 0x00000000)</p>
+            <p>*** UNKNOWN_DRIVER.sys - Address 0x12345678 base at 0x87654321, DateStamp 0xabcdef01</p>
+            <br>
+            <p>Collecting data for crash dump ...</p>
+            <p>Initializing disk for crash dump ...</p>
+            <p>Beginning dump of physical memory ...</p>
+            <p>Dumping physical memory to disk: 40%</p>
+            <p class="flicker">Dump complete.</p>
+            <p class="flicker">Press Ctrl+R to restart</p>
+        </div>
+    `;
+
+        // Add flickering effect to make the final part of the BSOD more realistic
+        body.style.animation = "flicker 1.5s infinite";
+
+        // Add the flickering keyframes for the "dump complete" section
+        const styleSheet = document.createElement("style");
+        styleSheet.innerHTML = `
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .flicker {
+            animation: flicker 1.5s infinite;
+        }
+    `;
+        document.head.appendChild(styleSheet);
+
+        // Listen for 'Ctrl+Alt+Del' keypress or "exit" command to recover
+        window.addEventListener('keydown', handleBSODExit);
+    }
+
+    // Handle input submission
+    cliInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+            const inputValue = cliInput.value.trim();
+
+            if (inputValue) {
+                if (maliciousCommands.includes(inputValue)) {
+                    triggerBSOD(); // Trigger the BSOD effect if a malicious command is run
+                } else {
+                    processCommand(inputValue);
+                }
+                cliInput.value = '';
+            }
+        }
+    });
+
 
     // Automatically focus on the input field
     window.onload = () => {
