@@ -137,7 +137,7 @@
 
     const commands = {
         'help': 'Available commands: \nhelp - Show available commands\nclear - clear the terminal screen\nabout - Information about the author\nlinkedin - Open LinkedIn\n' +
-            'github - Open GitHub\nls – list directory contents\ncat – concatenate and print files\nrm – remove directory entries',
+            'github - Open GitHub\nblog - Open Blog\nls – list directory contents\ncat – concatenate and print files\nrm – remove directory entries',
         'about': 'Seasoned engineering leader with a proven track record of architecting and scaling global, distributed systems that power mission-critical platforms. Adept at crafting data-driven technical strategy, leading cross-functional teams, and fostering a culture of innovation to provide highly available, resilient solutions at scale for global technology platforms.',
         'linkedin': () => {
             window.open("https://www.linkedin.com/in/stefanomantini", "_blank");
@@ -146,6 +146,10 @@
         'github': () => {
             window.open("https://github.com/0xste", "_blank");
             return 'Opening GitHub...';
+        },
+        'blog': () => {
+            window.open("https://0xste.github.io", "_blank");
+            return 'Opening Blog...';
         },
         'ls': () => {
             return generateFileList();
